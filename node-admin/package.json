@@ -4,12 +4,14 @@
   "description": "Admin panel for my portfolio",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
   },
   "author": "Arnaud DE PEINDRAY",
   "license": "ISC",
   "dependencies": {
     "@adminjs/express": "^5.0.0",
+    "@adminjs/mongoose": "^3.0.0",
     "adminjs": "^6.1.5"
   }
 }
