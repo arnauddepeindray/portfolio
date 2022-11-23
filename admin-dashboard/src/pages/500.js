@@ -50,12 +50,13 @@ const TreeIllustration = styled('img')(({ theme }) => ({
 
 function Error500({}) {
   const router = useRouter();
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("Une erreur est survenue");
 
   useEffect(() => {
       setMessage(router.query.message);
       console.log(message);
   }, [])
+  
 
 
   return (

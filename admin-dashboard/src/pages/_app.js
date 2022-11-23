@@ -62,8 +62,25 @@ const App = props => {
 
 
   // Variables
-  const getLayout = Component.getLayout ?? (page => <AdminLayout>{page}</AdminLayout>)
-
+  const getLayout = Component.getLayout ?? (
+      page => 
+      <AdminLayout>{page}</AdminLayout>
+      
+    
+    )
+  
+  const withAuth = Component.auth ? (page => 
+        <SessionProvider session={session}>
+          <Auth>
+            {getLayout(page)}
+          </Auth>
+        </SessionProvider>
+      )
+      :
+      (page => 
+          getLayout(page)
+      )
+  
   
 
   return (
@@ -82,20 +99,12 @@ const App = props => {
         <SettingsConsumer>
           {({ settings }) => {
             return <ThemeComponent settings={settings}>{
-            getLayout(
-              <SessionProvider session={session}>
-                {Component.auth ? (
-                  <Auth>
-                    <Component {...pageProps} />
-                  </Auth>
-                ) : (
-                  <Component {...pageProps} />
-                )}
-                
-              </SessionProvider>)
-              
-            }</ThemeComponent>
+            withAuth(<Component {...pageProps}/>)
+            }
+            </ThemeComponent>
           }}
+
+          
         </SettingsConsumer>
       </SettingsProvider>
     </CacheProvider>
@@ -107,6 +116,7 @@ const Auth = ({children}) => {
   const { status } = useSession({ required: true, 
 
     onUnauthenticated() {
+        console.log("test");
         router.push({pathname: "/500", query: {message: 'Accès refusé'}});
     }
     
@@ -114,10 +124,12 @@ const Auth = ({children}) => {
 
   if(status === "loading"){
       return (
-      <div><p>Loading</p></div>
+      <p>Loading</p>
       )
 
   }
+
+  console.log(status);
 
 
 
