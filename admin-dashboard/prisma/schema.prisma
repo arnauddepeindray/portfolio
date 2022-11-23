@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model experience {
+  id                Int                 @id @default(autoincrement())
+  entreprise        String              @db.Text
+  poste             String              @db.Text
+  description       String              @db.Text
+  date_start        DateTime            @db.Date
+  date_end          DateTime            @db.Date
+  experience_image  experience_image[]
+  experience_skills experience_skills[]
+}
+
+model experience_image {
+  id            Int        @id @default(autoincrement())
+  id_image      Int
+  id_experience Int
+  experience    experience @relation(fields: [id_experience], references: [id], onUpdate: Restrict, map: "fk_experience")
+  upload        upload     @relation(fields: [id_image], references: [id], onDelete: Cascade, map: "fk_experience_image")
+
+  @@index([id_experience], map: "fk_experience")
+  @@index([id_image], map: "fk_experience_image")
+}
+
+model experience_skills {
+  id            Int        @id @default(autoincrement())
+  id_experience Int
+  id_skill      Int
+  skill         skill      @relation(fields: [id_skill], references: [id], onDelete: Cascade, map: "fk_experience_skill")
+  experience    experience @relation(fields: [id_experience], references: [id], onDelete: Cascade, map: "fk_skill_experience")
+
+  @@index([id_skill], map: "fk_experience_skill")
+  @@index([id_experience], map: "fk_skill_experience")
+}
+
+model project {
+  id             Int              @id @default(autoincrement())
+  nom            String           @db.Text
+  description    String           @db.Text
+  date_start     DateTime         @db.Date
+  date_end       DateTime         @db.Date
+  project_images project_images[]
+  project_skills project_skills[]
+}
+
+model project_images {
+  id         Int     @id @default(autoincrement())
+  id_image   Int
+  id_project Int
+  upload     upload  @relation(fields: [id_image], references: [id], onDelete: Cascade, map: "fk_images")
+  project    project @relation(fields: [id_project], references: [id], onDelete: Cascade, map: "fk_project")
+
+  @@index([id_image], map: "fk_images")
+  @@index([id_project], map: "fk_project")
+}
+
+model project_skills {
+  id         Int     @id @default(autoincrement())
+  id_project Int
+  id_skill   Int
+  skill      skill   @relation(fields: [id_skill], references: [id], onUpdate: Restrict, map: "fk_project_skill")
+  project    project @relation(fields: [id_project], references: [id], onUpdate: Restrict, map: "fk_skill_project")
+
+  @@index([id_skill], map: "fk_project_skill")
+  @@index([id_project], map: "fk_skill_project")
+}
+
+model skill {
+  id                Int                 @id @default(autoincrement())
+  nom               String              @db.Text
+  description       String              @db.Text
+  id_image          Int
+  note              Int
+  upload            upload              @relation(fields: [id_image], references: [id], onDelete: Cascade, map: "fk_skill_image")
+  experience_skills experience_skills[]
+  project_skills    project_skills[]
+
+  @@index([id_image], map: "fk_skill_image")
+}
+
+model upload {
+  id               Int                @id @default(autoincrement())
+  filename         String             @db.Text
+  date_upload      DateTime           @db.Date
+  experience_image experience_image[]
+  project_images   project_images[]
+  skill            skill[]
+}
+
+model user {
+  id       Int    @id @default(autoincrement())
+  email    String @unique(map: "user_email", length: 150) @db.Text
+  password String @db.Text
+  role     String @db.Text
+}

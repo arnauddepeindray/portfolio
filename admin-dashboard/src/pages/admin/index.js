@@ -13,8 +13,9 @@ import CardSkill from 'src/views/cards/CardSkill'
 
 
 
-const Portfolio = () => {
+const Dashboard = () => {
 
+ 
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
@@ -37,14 +38,6 @@ const Portfolio = () => {
   )
 }
 
-export default Portfolio
+Dashboard.auth = true;
 
-Portfolio.getLayout = (page) => {
-
-  return (
-    <Grid>
-{page}
-    </Grid>
-      
-  )
-};
+export default Dashboard

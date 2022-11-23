@@ -12,6 +12,9 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Demo Imports
 import FooterIllustrations from 'src/views/pages/misc/FooterIllustrations'
+import { useRouter } from 'next/router'
+import { Message } from 'mdi-material-ui'
+import { useEffect, useState } from 'react'
 
 // ** Styled Components
 const BoxWrapper = styled(Box)(({ theme }) => ({
@@ -43,7 +46,18 @@ const TreeIllustration = styled('img')(({ theme }) => ({
   }
 }))
 
-const Error500 = () => {
+
+
+function Error500({}) {
+  const router = useRouter();
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+      setMessage(router.query.message);
+      console.log(message);
+  }, [])
+
+
   return (
     <Box className='content-center'>
       <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
@@ -52,19 +66,29 @@ const Error500 = () => {
           <Typography variant='h5' sx={{ mb: 1, fontSize: '1.5rem !important' }}>
             Internal server error 👨🏻‍💻
           </Typography>
-          <Typography variant='body2'>Oops, something went wrong!</Typography>
+
+          <Typography variant='body2'>{message}</Typography>
+          
+          
         </BoxWrapper>
         <Img height='487' alt='error-illustration' src='/images/pages/500.png' />
+        <BoxWrapper>
         <Link passHref href='/'>
           <Button component='a' variant='contained' sx={{ px: 5.5 }}>
             Back to Home
           </Button>
         </Link>
+        </BoxWrapper>
+        
       </Box>
       <FooterIllustrations image={<TreeIllustration alt='tree' src='/images/pages/tree-3.png' />} />
     </Box>
   )
 }
 Error500.getLayout = page => <BlankLayout>{page}</BlankLayout>
+
+
+
+
 
 export default Error500

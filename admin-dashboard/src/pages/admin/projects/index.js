@@ -13,14 +13,12 @@ import TableCustomized from 'src/views/tables/TableCustomized'
 import TableCollapsible from 'src/views/tables/TableCollapsible'
 import TableStickyHeader from 'src/views/tables/TableStickyHeader'
 
-const MUITable = () => {
+const ProjectTable = () => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
-        <Typography variant='h5'>
-          <Link href='https://mui.com/components/tables/' target='_blank'>
-            MUI Tables
-          </Link>
+        <Typography variant='h5'>  
+          Mes projets
         </Typography>
         <Typography variant='body2'>Tables display sets of data. They can be fully customized</Typography>
       </Grid>
@@ -64,4 +62,4 @@ const MUITable = () => {
   )
 }
 
-export default MUITable
+export default ProjectTable
