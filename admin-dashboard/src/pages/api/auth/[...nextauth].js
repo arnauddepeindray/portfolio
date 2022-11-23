@@ -29,7 +29,10 @@ export const authOptions = {
             return user;
           }
         })
-      ] 
+      ],
+      pages: {
+        signIn: '/admin/login',
+      } 
 
 }
 
