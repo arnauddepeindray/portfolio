@@ -8,8 +8,6 @@ import { useRouter } from 'next/router'
 // ** MUI Components
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
-import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
 import InputLabel from '@mui/material/InputLabel'
 import Typography from '@mui/material/Typography'
@@ -23,10 +21,6 @@ import InputAdornment from '@mui/material/InputAdornment'
 import MuiFormControlLabel from '@mui/material/FormControlLabel'
 
 // ** Icons Imports
-import Google from 'mdi-material-ui/Google'
-import Github from 'mdi-material-ui/Github'
-import Twitter from 'mdi-material-ui/Twitter'
-import Facebook from 'mdi-material-ui/Facebook'
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
@@ -38,6 +32,9 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
+
+// ** auth import
+import {signIn} from "next-auth/react";
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -60,9 +57,16 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 const LoginPage = () => {
   // ** State
   const [values, setValues] = useState({
+    username: '',
     password: '',
     showPassword: false
   })
+
+  const [error, setError] = useState({
+    message: '',
+    isError: false,
+  });
+
 
   // ** Hook
   const theme = useTheme()
@@ -70,6 +74,7 @@ const LoginPage = () => {
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
+    setError({message: '', isError: false})
   }
 
   const handleClickShowPassword = () => {
@@ -78,6 +83,15 @@ const LoginPage = () => {
 
   const handleMouseDownPassword = event => {
     event.preventDefault()
+  }
+
+  const handleSignIn = async event => {
+    event.preventDefault();
+    const res = await signIn("credentials", {username: values.username, password: values.password, redirect: false})
+
+    if(!res.ok)
+      setError({message: "Authentification failed", isError: true});
+    
   }
 
   return (
@@ -159,16 +173,27 @@ const LoginPage = () => {
           </Box>
           <Box sx={{ mb: 6 }}>
             <Typography variant='h5' sx={{ fontWeight: 600, marginBottom: 1.5 }}>
-              Welcome to {themeConfig.templateName}! 👋🏻
+              Authentification de mon {themeConfig.templateName}! 👋🏻
             </Typography>
-            <Typography variant='body2'>Please sign-in to your account and start the adventure</Typography>
           </Box>
-          <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-            <TextField autoFocus fullWidth id='email' label='Email' sx={{ marginBottom: 4 }} />
+          {error.isError ? 
+            <Box sx={{ mb: 6 }} className={"alert alert-danger"}>
+            <Typography  sx={{ fontWeight: 600, marginBottom: 1.5 }}>
+              {error.message}
+            </Typography>
+          </Box>
+          
+          : <div></div>
+        }     
+
+          
+          <form noValidate autoComplete='off'>
+            <TextField required={true} autoFocus fullWidth id='username' label='Utilisateur' sx={{ marginBottom: 4 }} onChange={handleChange('username')} />
             <FormControl fullWidth>
-              <InputLabel htmlFor='auth-login-password'>Password</InputLabel>
+              <InputLabel htmlFor='auth-login-password'>Password *</InputLabel>
               <OutlinedInput
-                label='Password'
+                required={true} 
+                label='Password *'
                 value={values.password}
                 id='auth-login-password'
                 onChange={handleChange('password')}
@@ -193,7 +218,7 @@ const LoginPage = () => {
               size='large'
               variant='contained'
               sx={{ marginBottom: 7 }}
-              onClick={() => router.push('/admin/')}
+              onClick={handleSignIn}
             >
               Login
             </Button>
@@ -206,5 +231,7 @@ const LoginPage = () => {
   )
 }
 LoginPage.getLayout = page => <BlankLayout>{page}</BlankLayout>
+
+
 
 export default LoginPage

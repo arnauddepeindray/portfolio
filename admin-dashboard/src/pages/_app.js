@@ -116,11 +116,12 @@ const Auth = ({children}) => {
   const { status } = useSession({ required: true, 
 
     onUnauthenticated() {
-        console.log("test");
         router.push({pathname: "/500", query: {message: 'Accès refusé'}});
     }
     
   })
+
+
 
   if(status === "loading"){
       return (
@@ -129,7 +130,6 @@ const Auth = ({children}) => {
 
   }
 
-  console.log(status);
 
 
 

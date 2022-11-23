@@ -1,33 +1,32 @@
 const { PrismaClient } = require('@prisma/client')
+const bcrypt = require("bcrypt");
 
 const prisma = new PrismaClient()
 
-async function main(email, hashPassword) {
-    const user = await prisma.user.findUnique({
+async function main(email, clearPassword) {
+    let valid = false;
+    let user = await prisma.user.findUnique({
         where: {
-            AND: [
-                {
-                    email: {
+                email: {
                         equals: email
                     },
-                },
-                {
-                    password: {
-                        equals: hashPassword
-                    }
-                }
-            ]
-            
+  
         }
     })
+
+    if(user){
+        valid = await bcrypt.compare(clearPassword, user.password);  
+    }
+
+    user = valid ? user : null;
 
     return user;
 
 }
 
-export default function handler(req, res){
-    console.log(req, res);
-    
-
+export default async function checkUser(credentials){
+    const user = await main(credentials.username, credentials.password);
+    await prisma.$disconnect()
+    return user;
 
 }
